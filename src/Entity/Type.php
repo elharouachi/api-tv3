@@ -24,11 +24,10 @@ use Doctrine\ORM\Mapping as ORM;
  *         "delete"={"security"="is_granted('ROLE_WRITE_OBJECT')", "security_message"="Not authorized to delete this entity"}
  *     }
  * )
- *
- * @ORM\Entity(repositoryClass=TypeRepository::class)
+ * @ORM\Entity
  * @ORM\Table(name="type")
  */
-class Type
+class Type extends BaseApiEntity
 {
     /**
      * @ORM\Id
@@ -54,8 +53,9 @@ class Type
     private $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Movie::class, inversedBy="types", cascade={"persist"})
-     * @ORM\JoinTable(name="movie_has_type")
+     * @var ArrayCollection Movie[]
+     *
+     * @ORM\ManyToMany(targetEntity=Movie::class, mappedBy="types", cascade={"persist"})
      */
     private $movies;
 
@@ -64,7 +64,7 @@ class Type
         $this->movies = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }

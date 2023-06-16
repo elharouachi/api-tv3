@@ -30,14 +30,14 @@ abstract class BaseApiEntity
         string $apiVersion
     ) {
         $result = [];
+
         foreach ($entityDataList as $entityData) {
             if (!empty($entityData['id'])) {
-                $entityData['id'] = \sprintf('/%s/%s/%s', $apiVersion, $entityIriName, $entityData['id']);
+                $item = \sprintf('/%s/%s/%s', $apiVersion, $entityIriName, $entityData['id']);
             }
-            $result[] = $entityData;
+            $result[] = $item;
         }
-
-        $data[$field] = $result;
+        $data[$entityIriName] = $result;
     }
 
     protected function handleFlatMultipleIriConversion(

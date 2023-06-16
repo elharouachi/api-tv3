@@ -92,3 +92,15 @@ services:
             $tokenTTL: '%lexik_jwt_authentication.token_ttl%'
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccessResponse }
+
+
+    App\Json\Serializer\VideoNormalizer:
+        tags:
+            - { name: serializer.normalizer, priority: 10 }
+
+    App\Json\Serializer\ItemNormalizer:
+        arguments:
+            $decorated: '@api_platform.serializer.normalizer.item'
+            $apiVersion: '%api_version%'
+        tags:
+            - { name: serializer.normalizer, priority: 8 }

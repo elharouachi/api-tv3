@@ -6,11 +6,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\MovieRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * * Can represent anyone who has the right to see the films
+ * * Can represent anyone who has the right to see the movies
  *
  * @ApiResource(
  *     attributes={
@@ -18,7 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
  *         "normalization_context"={"groups"={"read_movie"}},
  *         "denormalization_context"={"groups"={"write_movie"}},
  *         "order"={"id": "ASC"},
- *         "short_name"="s"
+ *         "short_name"="m"
  *     },
  *     collectionOperations={
  *         "get"={"security"="is_granted('PUBLIC_ACCESS')"},
@@ -45,9 +46,10 @@ class Movie extends BaseApiEntity
     private $id;
 
     /**
-     *  @var string title of movie
+     * @var string title of movie
      * @ORM\Column(type="string", length=255)
      * @Groups({"read_movie", "write_movie", "read_movie_person", "read_people"})
+     * @Assert\NotBlank()
      *
      * @ApiProperty(
      *     attributes={
@@ -60,9 +62,10 @@ class Movie extends BaseApiEntity
     private $title;
 
     /**
-     *   @var integer duration of movie
+     * @var integer duration of movie
      * @ORM\Column(type="integer")
      * @Groups({"read_movie", "write_movie", "read_movie_person", "read_people"})
+     * @Assert\NotBlank()
      *
      *      * @ApiProperty(
      *     attributes={
@@ -81,8 +84,10 @@ class Movie extends BaseApiEntity
     private $people;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Type::class, mappedBy="movies", cascade={"persist"})
-     * @Groups({"read_movie", "write_movie", "read_movie_person", "read_people"})
+     * @Groups({"read_movie", "write_movie", "read_people"})
+     * @ORM\ManyToMany(targetEntity="Type", inversedBy="movies", cascade={"persist"})
+     * @ORM\JoinTable(name="movie_has_type")
+     * @Assert\Valid
      */
     private $types;
 
@@ -105,7 +110,6 @@ class Movie extends BaseApiEntity
      * )
      */
     private $poster;
-
 
     public function __construct()
     {
@@ -224,5 +228,20 @@ class Movie extends BaseApiEntity
         $this->poster = $poster;
 
         return $this;
+    }
+
+
+    public function denormalize(array &$data, string $apiVersion): void
+    {
+        foreach ($data as $field => $value) {
+            if (!empty($value) && \is_array($value) && \is_array(\current($value))) {
+                switch ($field) {
+                    case 'types':
+                        $this->handleMultipleIriConversion($data, $field, $value, 'types', $apiVersion);
+                        break;
+                }
+            }
+        }
+
     }
 }
