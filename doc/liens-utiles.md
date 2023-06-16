@@ -38,8 +38,22 @@
         ]
     }
 ```
+
+  * Creation un people
+    * lien : http://api-cinema.dev.boiteimmo.fr:11280/v1/people
+```json lines I'm A tab
+{
+    "firstname": "Toc Toc Docteura",
+    "lastname": "Toc Toc Docteura",
+     "dateOfBirth": "1987-10-26T00:00:00+00:00",
+      "nationality": "allemande"
+}
+```
+
 ```TODO
     finalisation enregistrement des peoples
     fixutes Data
+    Quelques finitions a faire.
+    enregistrement dans la table MovieHasPeople
     supscriber de recuperation d'image a la modification/creation de movie
-```TODO
+```T
