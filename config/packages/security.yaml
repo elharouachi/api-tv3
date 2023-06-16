@@ -1,0 +1,52 @@
+security:
+    encoders:
+        App\Entity\User:
+            algorithm: bcrypt
+            cost: 12
+
+    role_hierarchy:
+
+        ROLE_WHRITE_THIRD_PARTY: ROLE_WHRITE_DEFAULT
+        ROLE_WHRITE_FILM_RECORDS: ROLE_WHRITE_DEFAULT
+        ROLE_WHRITE_SENSITIVE: [ROLE_WHRITE_THIRD_PARTY, ROLE_WHRITE_RECORDS]
+
+        ROLE_WRITE_FILM: ROLE_WRITE_OBJECT
+
+        ROLE_ADMIN: [ROLE_WHRITE_SENSITIVE, ROLE_WRITE_FILM]
+
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: username
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        login:
+            pattern: ^/%api_version%/auth
+            stateless: true
+            anonymous: true
+            json_login:
+                check_path: /%api_version%/auth
+                username_path: username
+                password_path: password
+                success_handler: App\Security\AuthenticationSuccessHandler
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        api:
+            pattern: ^/%api_version%
+            stateless: true
+            anonymous: true
+            provider: app_user_provider
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+
+    access_control:
+        - { path: ^/%api_version%/auth,                 roles: PUBLIC_ACCESS }
+        - { path: ^/%api_version%/docs,                 roles: PUBLIC_ACCESS }
+        - { path: ^/healthcheck,                        roles: PUBLIC_ACCESS }
+        - { path: ^/%api_version%/,                     roles: PUBLIC_ACCESS }

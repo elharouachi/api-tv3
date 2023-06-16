@@ -1,0 +1,58 @@
+/.bundle
+/deploy/logs
+/docker-compose.override.yaml
+/docker-compose.override.yml
+/node_modules
+
+.idea
+
+###> api ###
+/.env.local
+/.env.*.local
+/.env.local.php
+!/.env.test.local
+!/bin/local-php-security-checker
+/public/bundles/
+/var/
+/vendor/
+/bin/phpunit
+/public/assets/*
+!/public/assets/.gitkeep
+!var/cache/.gitkeep
+!var/logs/.gitkeep
+###< api ###
+
+/helm/api/charts
+/helm/api/requirements.lock
+
+###> friendsofphp/php-cs-fixer ###
+.php_cs.cache
+.php-cs-fixer.cache
+###< friendsofphp/php-cs-fixer ###
+
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
+
+###> behat/symfony2-extension ###
+behat.yml
+###< behat/symfony2-extension ###
+
+###> symfony/phpunit-bridge ###
+.phpunit
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###

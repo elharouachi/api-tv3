@@ -1,0 +1,7 @@
+api_platform:
+    formats:
+        jsonld:   ['application/ld+json']
+
+    error_formats:
+        json:    ['application/json']
+        jsonld:  ['application/ld+json']

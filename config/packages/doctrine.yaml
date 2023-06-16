@@ -1,0 +1,27 @@
+doctrine:
+    dbal:
+        host:      '%env(DATABASE_HOST)%'
+        dbname:    '%env(DATABASE_NAME)%'
+        user:      '%env(DATABASE_USER)%'
+        password:  '%env(DATABASE_PASSWORD)%'
+        port:      '%env(int:DATABASE_PORT)%'
+            
+        driver: 'pdo_mysql'
+        server_version: 'mariadb-10.2.21'
+        types:
+            datetime: App\Doctrine\UtcDateTimeType
+        charset: utf8mb4
+        default_table_options:
+            charset: utf8mb4
+            collate: utf8mb4_unicode_ci
+    orm:
+        auto_generate_proxy_classes: '%kernel.debug%'
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+        mappings:
+            App:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Entity'
+                prefix: 'App\Entity'
+                alias: App

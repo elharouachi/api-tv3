@@ -1,0 +1,70 @@
+version: '3.2'
+
+services:
+    api-cinema-mariadb:
+        image: mariadb:10.2
+        restart: always
+        networks:
+            cinema-backend:
+        environment:
+            - MYSQL_DATABASE=${DATABASE_NAME}
+            - MYSQL_USER=${DATABASE_USER}
+            - MYSQL_PASSWORD=${DATABASE_PASSWORD}
+            - MYSQL_ROOT_PASSWORD=${DATABASE_ROOT_PASSWORD}
+        volumes:
+            - ${PROJECT_DATA_PATH}/mysqldb:/var/lib/mysql:rw
+
+    api-cinema:
+        image: uselagoon/php-7.4-fpm
+        networks:
+            cinema-backend:
+        depends_on:
+            - api-cinema-mariadb
+        volumes:
+            - ${PROJECT_ROOT_PATH}:/var/www:rw
+
+    api-cinema-nginx:
+        image: nginx:1.10.3
+        build:
+            context: .
+            dockerfile: DockerfileNgnix
+        networks:
+            cinema-backend:
+                aliases:
+                    - api-cinema.dev.boiteimmo.fr
+        environment:
+            - VHOSTS=api-cinema:symfony4:/var/www/public
+        depends_on:
+            - api-cinema
+        ports:
+            - "11280:80"
+            - "11243:443"
+        volumes:
+            - ${PROJECT_ROOT_PATH}:/var/www:rw
+
+    api-cinema-php-tools:
+        image: php:7.4
+        build:
+            context: .
+            dockerfile: Dockerfile
+        networks:
+            cinema-backend:
+        volumes:
+            - "~/.ssh:/home/www-data/.ssh"
+            - ${PROJECT_ROOT_PATH}:/var/www
+            -   type: tmpfs
+                target: /tmp
+
+    api-cinema-adminer:
+        image: adminer
+        networks:
+            cinema-backend:
+        depends_on:
+            - api-cinema-mariadb
+            - api-cinema
+        ports:
+            - "11282:8080"
+
+networks:
+    cinema-backend:
+        external: true

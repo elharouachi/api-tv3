@@ -1,0 +1,21 @@
+export ZSH=/home/www-data/.oh-my-zsh
+
+# ZSH Theme
+ZSH_THEME=$OH_MY_ZSH_THEME
+
+# Plugins
+plugins=(symfony2 composer npm node history ant)
+
+# User configuration
+export PATH=$PATH:/usr/local/bin
+source $ZSH/oh-my-zsh.sh
+
+xdebug() {
+ XDEBUG_TRIGGER=1 "$@"
+}
+xdebug_enable() {
+ export XDEBUG_TRIGGER=1
+}
+xdebug_disable() {
+ unset XDEBUG_TRIGGER
+}

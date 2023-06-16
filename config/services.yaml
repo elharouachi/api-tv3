@@ -1,0 +1,94 @@
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: 'en'
+    default_locale: 'en'
+    image_storage_path: '%kernel.project_dir%/public/assets'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        public: false       # Allows optimizing the container by removing unused services; this also means
+        # fetching services directly from the container via $container->get() won't work.
+        # The best practice is to be explicit about your dependencies anyway.
+        bind:
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{Entity,Migrations,Tests}'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+
+
+###############################
+    immo_cinema_service.http_client.guzzle:
+        class: GuzzleHttp\Client
+        arguments:
+            $config:
+                http_errors: false
+
+    immo_cinema_service.json_api_requester:
+        class: App\Http\JsonApiRequester
+        arguments:
+            $httpRequester: '@immo_cinema_service.http_requester'
+
+    # http requests
+    immo_cinema_service.http_requester:
+        class: App\Http\HttpRequester
+        arguments:
+            $client:  '@immo_cinema_service.http_client.guzzle'
+
+####################################"
+    App\Http\IMDB\ImdbApiRequester:
+        arguments:
+            $apiRequester: '@immo_cinema_service.json_api_requester'
+            $apiUrl: '%env(resolve:IMDB_API_URL)%'
+            $headers: '%env(resolve:IMDB_API_HEADERS)%'
+
+    App\Swagger\SwaggerAuthNormalizer:
+        decorates: 'App\Swagger\SwaggerCustomActionsNormalizer'
+        arguments: [ '@App\Swagger\SwaggerAuthNormalizer.inner' ]
+        autoconfigure: false
+
+    App\Swagger\SwaggerCustomActionsNormalizer:
+        decorates: 'App\Swagger\SwaggerSearchNormalizer'
+        arguments: [ '@App\Swagger\SwaggerCustomActionsNormalizer.inner' ]
+        autoconfigure: false
+
+    App\Swagger\SwaggerSearchNormalizer:
+        decorates: 'App\Swagger\SwaggerEntityDescriptionNormalizer'
+        arguments:
+            $decorated: '@App\Swagger\SwaggerSearchNormalizer.inner'
+            $iriConverter: '@api_platform.iri_converter'
+        autoconfigure: false
+
+    App\Swagger\SwaggerEntityDescriptionNormalizer:
+        decorates: 'App\Swagger\SwaggerPropertiesNormalizer'
+        arguments: [ '@App\Swagger\SwaggerEntityDescriptionNormalizer.inner' ]
+        autoconfigure: false
+
+    App\Swagger\SwaggerPropertiesNormalizer:
+        decorates: 'api_platform.swagger.normalizer.documentation'
+        arguments: [ '@App\Swagger\SwaggerPropertiesNormalizer.inner' ]
+        autoconfigure: false
+
+    # Override the default dateTime format of the DateTimeNormalizer
+    Symfony\Component\Serializer\Normalizer\DateTimeNormalizer:
+        arguments:
+            $defaultContext:
+                datetime_format: 'c'
+
+    App\EventListener\JWTAuthenticatedListener:
+        arguments:
+            $tokenTTL: '%lexik_jwt_authentication.token_ttl%'
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccessResponse }

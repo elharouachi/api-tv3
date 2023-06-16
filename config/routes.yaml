@@ -1,0 +1,25 @@
+# Auth    
+api_auth:
+    path: /%api_version%/auth
+
+# Redirect
+homepage:
+    path: /
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirectAction
+    condition: "request.headers.get('Content-Type') !== 'application/json'"
+    defaults:
+        path: /%api_version%/docs
+        permanent: true
+
+homepage_json:
+    path: /
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirectAction
+    condition: "request.headers.get('Content-Type') == 'application/json'"
+    defaults:
+        path: /%api_version%
+        permanent: true
+
+# Swagger
+swagger_ui:
+    path: /%api_version%/docs
+    controller: api_platform.swagger.action.ui
