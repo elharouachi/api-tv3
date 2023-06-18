@@ -9,7 +9,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * * Can represent anyone who has the right to see the films
+ * *Can represent anyone who has the right to see the films
  *
  * @ApiResource(
  *     attributes={
@@ -17,7 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
  *         "normalization_context"={"groups"={"read_people"}},
  *         "denormalization_context"={"groups"={"write_people"}},
  *         "order"={"id": "ASC"},
- *         "short_name"="s"
+ *         "short_name"="p"
  *     },
  *     collectionOperations={
  *         "get"={"security"="is_granted('PUBLIC_ACCESS')", "security_message"="Not authorized to access this entity"},
@@ -38,7 +38,7 @@ class People extends BaseApiEntity
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read_people"})
+     * @Groups({"read_people", "read_movie_person"})
      * @ApiProperty(
      *     attributes={
      *         "swagger_context"={
@@ -51,30 +51,47 @@ class People extends BaseApiEntity
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read_people","write_people"})
+     * @Groups({"read_people","write_people", "read_movie", "read_movie_person"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read_people","write_people"})
+     * @Groups({"read_people","write_people", "read_movie", "read_movie_person"})
      */
     private $lastname;
 
     /**
+     *  @var string date of birthday a person
      * @ORM\Column(type="date")
-     * @Groups({"read_people","write_people"})
+     * @Groups({"read_people","write_people", "read_movie", "read_movie_person"})
+     * @ApiProperty(
+     *     attributes={
+     *         "swagger_context"={
+     *             "example"="2012-12-12"
+     *         }
+     *     }
+     * )
      */
     private $dateOfBirth;
 
     /**
+     * @var string nationality of person
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read_people","write_people"})
+     * @Groups({"read_people","write_people", "read_movie", "read_movie_person"})
+     *
+     * @ApiProperty(
+     *     attributes={
+     *         "swagger_context"={
+     *             "example"="france, germany"
+     *         }
+     *     }
+     * )
      */
     private $nationality;
 
     /**
-     * @Groups({"read_people","write_people", "read_movie_person", "read_movie"})
+     * @Groups({"read_people", "write_people"})
      * @ORM\OneToMany(targetEntity="MovieHasPeople", mappedBy="people")
      */
     private $peopleHasMovie;

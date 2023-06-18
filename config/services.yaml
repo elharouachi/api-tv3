@@ -94,7 +94,7 @@ services:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccessResponse }
 
 
-    App\Json\Serializer\VideoNormalizer:
+    App\Json\Serializer\MovieNormalizer:
         tags:
             - { name: serializer.normalizer, priority: 10 }
 

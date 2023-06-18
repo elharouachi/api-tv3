@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
  *         "normalization_context"={"groups"={"read_movie_person"}},
  *         "denormalization_context"={"groups"={"write_movie_person"}},
  *         "order"={"id": "ASC"},
- *         "short_name"="s"
+ *         "short_name"="mhp"
  *     },
  *     collectionOperations={
  *         "get"={"security"="is_granted('PUBLIC_ACCESS')"},
@@ -54,13 +54,13 @@ class MovieHasPeople
 
     /**
      * @ORM\ManyToOne(targetEntity=Movie::class, inversedBy="movieHasPeople")
-     * @Groups({"read_movie_person", "write_movie_person", "read_people", "read_movie"})
+     * @Groups({"read_movie_person", "write_movie_person", "read_people"})
      */
     private $movie;
 
     /**
      * @ORM\ManyToOne(targetEntity=People::class, inversedBy="peopleHasMovie")
-     * @Groups({"read_movie_person", "write_movie_person"})
+     * @Groups({"read_movie_person", "write_movie_person", "read_movie"})
      */
     private $people;
 

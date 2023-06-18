@@ -78,12 +78,6 @@ class Movie extends BaseApiEntity
     private $duration;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\People", inversedBy="movies")
-
-     */
-    private $people;
-
-    /**
      * @Groups({"read_movie", "write_movie", "read_people"})
      * @ORM\ManyToMany(targetEntity="Type", inversedBy="movies", cascade={"persist"})
      * @ORM\JoinTable(name="movie_has_type")
@@ -93,6 +87,7 @@ class Movie extends BaseApiEntity
 
     /**
      * @ORM\OneToMany(targetEntity=MovieHasPeople::class, mappedBy="movie")
+     * @Groups({"read_movie", "write_movie"})
      */
     private $movieHasPeople;
 
@@ -109,7 +104,7 @@ class Movie extends BaseApiEntity
      *     }
      * )
      */
-    private $poster;
+    private $poster = null;
 
     public function __construct()
     {
@@ -166,31 +161,6 @@ class Movie extends BaseApiEntity
         return $this;
     }
 
-    public function getPeople()
-    {
-        return $this->people;
-    }
-
-    public function addPeople(People $person): self
-    {
-        if (!$this->people->contains($person)) {
-            $this->people[] = $person;
-            $person->addPeopleHasMovie($this);
-        }
-
-        return $this;
-    }
-
-    public function removePeople(People $people): self
-    {
-        if ($this->people->contains($people)) {
-            $this->people->removeElement($people);
-            $people->removePeopleHasMovie($this);
-        }
-
-        return $this;
-    }
-
     public function getMovieHasPeople()
     {
         return $this->movieHasPeople;
@@ -218,7 +188,7 @@ class Movie extends BaseApiEntity
         return $this;
     }
 
-    public function getPoster(): string
+    public function getPoster(): ?string
     {
         return $this->poster;
     }

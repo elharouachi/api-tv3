@@ -9,13 +9,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- *  * @ApiResource(
+ *  Represents list type movies
+ *
+ *  @ApiResource(
  *     attributes={
  *         "force_eager"=false,
  *         "normalization_context"={"groups"={"read_type"}},
  *         "denormalization_context"={"groups"={"write_type"}},
  *         "order"={"id": "ASC"},
- *         "short_name"="s"
+ *         "short_name"="t"
  *     },
 
  *     itemOperations={
