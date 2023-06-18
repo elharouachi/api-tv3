@@ -3,18 +3,18 @@
     roles: ["ROLE_ADMIN"]
     description: user admin
     lastConnection: "01-06-2018 10:15:00"
-    createdAt: "01-06-2018 10:15:00"
+    createdAt: "01-06-2023 10:15:00"
 
 -   username: user
     password: user
     roles: ["ROLE_READ_DEFAULT"]
     description: simple user
-    lastConnection: "01-06-2018 10:15:00"
-    createdAt: "01-06-2018 10:15:00"
+    lastConnection: "01-06-2022 10:15:00"
+    createdAt: "01-06-2023 10:15:00"
 
 -   username: user1
     password: user
-    roles: ["ROLE_WRITE_LIVE", "ROLE_WRITE_VIDEO"]
+    roles: ["ROLE_WRITE_OBJECT"]
     description: simple user
-    lastConnection: "01-06-2018 10:15:00"
-    createdAt: "01-06-2018 10:15:00"
+    lastConnection: "01-06-2023 10:15:00"
+    createdAt: "01-06-2023 10:15:00"
